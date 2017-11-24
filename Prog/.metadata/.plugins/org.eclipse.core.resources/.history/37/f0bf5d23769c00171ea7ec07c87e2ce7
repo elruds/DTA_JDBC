@@ -1,0 +1,8 @@
+
+class Ex1 {
+   static void main (String[] arg)
+   {
+	  System.out.println("Goodbye Cruel World") ;
+   }
+}
+   

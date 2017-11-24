@@ -1,0 +1,13 @@
+
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+
+public class databaseGUI extends JFrame implements ActionListener
+{
+	//instance variables are all the components 
+	private JPanel top, middle, bottom;
+            private JTextField text;
+            private JLabel label;
+            private JButton printButton, clearButton;
+}

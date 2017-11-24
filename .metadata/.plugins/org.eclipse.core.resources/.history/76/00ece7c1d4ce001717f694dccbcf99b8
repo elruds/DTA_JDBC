@@ -1,0 +1,68 @@
+
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+
+public class databaseGUI extends JFrame implements ActionListener
+{
+	//instance variables are all the components 
+			private JPanel top, bottom;
+            private JLabel memberNameLabel, courseLabel, makeBookingLabel;
+            private JComboBox courseChooser;
+            private JTextField enterMemberName, displayInfo;
+            private JButton courseInfoButton, memberInfoButton, bookButton;
+            
+            
+           public databaseGUI() {
+        	   
+        	setDefaultCloseOperation(EXIT_ON_CLOSE);
+       		setTitle("Gym Bookings");
+       		setSize(400,150);
+       		setLocation(0,0);
+
+       		//set layout
+       		layoutComponents();        	   
+           }
+            
+           
+           
+           private void layoutComponents() {
+        	   
+        	   top = new JPanel();
+        	   BorderLayout bl = new BorderLayout();
+        	   top.setBackground(Color.gray);
+        	   top.setLayout(bl);
+        	   
+        	   courseInfoButton = new JButton("View Course Info");
+        	   courseInfoButton.addActionListener(this);
+        	   top.add(courseInfoButton, BorderLayout.SOUTH);
+        	   
+        	   memberInfoButton = new JButton("View Member Info");
+        	   memberInfoButton.addActionListener(this);
+        	   top.add(memberInfoButton, BorderLayout.SOUTH);
+        	   
+        	   displayInfo = new JTextField(20);
+        	   displayInfo.setEditable(false);
+        	   top.add(displayInfo, BorderLayout.NORTH);
+        	   
+//        	   bottom = new JPanel();
+//        	   bottom.setLayout(bl);
+//        	   
+//        	   makeBookingLabel = new JLabel("Make a Booking");
+//        	   bottom.add(makeBookingLabel, BorderLayout.NORTH);
+//        	   
+//        	   memberNameLabel = new JLabel("Member name");
+//        	   bottom.add(memberNameLabel, BorderLayout.SOUTH);
+//        	   
+//        	   enterMemberName = new JTextField(20);
+//        	   bottom.add(enterMemberName, BorderLayout.SOUTH);
+        	  
+        	   add(top,BorderLayout.NORTH);
+//        	   add(bottom, BorderLayout.SOUTH);
+        	   
+           }
+           
+           public void actionPerformed(ActionEvent e) {
+        	   
+           }
+}

@@ -1,0 +1,9 @@
+package FormatIO;
+
+public class iiEx1 {
+
+	public static void main (String[] arg)
+    {
+    	Console con = new Console();
+}
+}

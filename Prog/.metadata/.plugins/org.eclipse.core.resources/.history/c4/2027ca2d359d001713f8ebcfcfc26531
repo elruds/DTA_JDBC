@@ -1,0 +1,13 @@
+package FormatIO;
+import FormatIO.*;
+
+public class Ex1 {
+
+	public static void main (String[]arg)
+	
+	{	
+		Console con = new Console (Please enter your first name);
+	
+}
+	
+}

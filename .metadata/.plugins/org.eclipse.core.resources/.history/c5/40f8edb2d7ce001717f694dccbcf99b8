@@ -1,0 +1,78 @@
+
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+
+public class databaseGUI extends JFrame implements ActionListener
+{
+	//instance variables are all the components 
+			private JPanel top, bottom;
+            private JLabel memberNameLabel, courseLabel;
+            private JComboBox courseChooser;
+            private JTextField enterMemberName;
+            private JTextArea displayInfo;
+            private JButton courseInfoButton, memberInfoButton, bookButton;
+            
+            
+           public databaseGUI() {
+        	   
+        	setDefaultCloseOperation(EXIT_ON_CLOSE);
+       		setTitle("Gym Bookings");
+       		setSize(600,200);
+       		setLocation(0,0);
+
+       		//set layout
+       		layoutComponents();        	   
+           }
+            
+           
+           
+           private void layoutComponents() {
+        	   
+        	   top = new JPanel();
+        	   top.setBackground(Color.gray);
+        	   
+        	   
+        	   displayInfo = new JTextArea(5,20);
+        	   displayInfo.setEditable(false);
+        	   JScrollPane scrollPane = new JScrollPane(displayInfo);
+        	   top.add(scrollPane);
+        	   
+        	   courseInfoButton = new JButton("View Course Info");
+        	   courseInfoButton.addActionListener(this);
+        	   top.add(courseInfoButton);
+        	   
+        	   memberInfoButton = new JButton("View Member Info");
+        	   memberInfoButton.addActionListener(this);
+        	   top.add(memberInfoButton);
+        	   
+        	  
+        	   bottom = new JPanel();
+        	   FlowLayout fl = new FlowLayout();
+        	   bottom.setLayout(fl);
+        	   
+        	   memberNameLabel = new JLabel("Member name:");
+        	   bottom.add(memberNameLabel);
+        	   
+        	   enterMemberName = new JTextField(20);
+        	   bottom.add(enterMemberName);
+        	   
+        	   courseLabel = new JLabel("Course:");
+        	   bottom.add(courseLabel);
+        	   
+        	   courseChooser = new JComboBox();
+        	   courseChooser.addItem("Yoga");
+        	   courseChooser.addItem("Pilates");
+        	   courseChooser.addItem("Swimming");
+        	   courseChooser.addItem("Spinning");
+        	   bottom.add(courseChooser);
+        	   
+        	   add(top,BorderLayout.NORTH);
+        	   add(bottom, BorderLayout.SOUTH);
+        	   
+           }
+           
+           public void actionPerformed(ActionEvent e) {
+        	   
+           }
+}

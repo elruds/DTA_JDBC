@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy package &apos;FormatIO&apos; to &apos;Lab9&apos;&#x0D;&#x0A;- Original project: &apos;Lab7&apos;&#x0D;&#x0A;- Destination element: &apos;Lab9&apos;&#x0D;&#x0A;- Original element: &apos;Lab7/FormatIO&apos;" description="Copy package" destination="=Lab9" element1="/&lt;FormatIO" flags="589830" fragments="1" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyPackages" stamp="1508247331667" version="1.0"/>
+</session>
