@@ -4,14 +4,41 @@ import java.sql.*;
 public class myDatabase {
 
 	private Connection connection = null;
-	private String [] courseNames;
+	private String allCourseInfo;
+	private ResultSet rs;
+	private String courseName;
+	private String courseChosen;
+	private String memberInfo;
+	private String memID;
+	private String courseiD;
+	private int bookingNumb;
 	
-
 	
-	public myDatabase()	{
-
+	public myDatabase() {
+		createConnection();
+		
+	}
+	
+//	public void setCourseID(String cID)	{
+//		this.courseiD = cID;
+//	}
+//	
+//	public void setmemID(String mID)	{
+//		this.memID = mID;
+//	}
+//	
+//	public void setBookingNumb(int bkNum)	{
+//		this.bookingNumb = bkNum;
+//	}
+	
+	
+	public void createConnection()	{
+		this.connectDatabase();
 }
 	
+	public ResultSet getResultSet(){
+		return rs;
+	}
 
 	
 	public void connectDatabase() {
@@ -54,88 +81,117 @@ public class myDatabase {
 		}
 	}
 	
-	
-	
-	
-	
-	
-	public String [] getAllCourses() {
+	public String getCourseNames()	{
 		
+
 		Statement stmt = null;
-						String query = "SELECT name FROM gym.course ";
+						String query = "SELECT DISTINCT name FROM gym.course";
 						try {
 							stmt = connection.createStatement();
-							ResultSet rs = stmt.executeQuery(query);
-							while (rs.next()){
-								int i;
-								for (i = 0; i < 10; i++) {
-
-								String courseName = rs.getString("name");
-								String [] courseNames = new String[10];
-								courseNames[i] = courseName;
-								System.out.print(courseNames);
-							}
+							rs = stmt.executeQuery(query);
+							while (rs.next())	{
+								
+								courseName = rs.getString("name");
+								
 						}
+						}
+						catch(SQLException e) {
+							e.printStackTrace();
+							System.err.println("error executing query "+ query);
+						}
+					return courseName;
+	}
+
+		
+	
+	
+	
+	
+	
+	public String getAllCourses() {
+		
+		Statement stmt = null;
+						String query = "SELECT c.name, c.numplaces,i.fname,i.sname, COUNT(bookingnumber) FROM gym.course as c LEFT JOIN gym.coursebookings as cb "
+								+ "ON c.courseid = cb.courseid INNER JOIN gym.instructor as i ON c.instructorid = i.instructorid "
+								+ "GROUP BY c.name, c.numplaces,i.fname,i.sname ";
+						String allCourseInfo = "";
+						try {
+							stmt = connection.createStatement();
+							rs = stmt.executeQuery(query);
+							while (rs.next())	{
+								
+								String nameOfCourse = rs.getString("name");
+								String capacity = rs.getString("numplaces");
+								String instructorFName = rs.getString("fname");
+								String instructorSName = rs.getString("sname");
+								String count = rs.getString("count");
+								allCourseInfo += "Course name: " + nameOfCourse + " " + "Capacity: " + capacity + " " + "Instructor: " + instructorFName + " " + instructorSName +  " " + "Members booked: " + count +"\n";
+							}
 						}
 		
 						catch(SQLException e) {
 							e.printStackTrace();
 							System.err.println("error executing query "+ query);
 						}
-					return courseNames;
+					return allCourseInfo;
 	}
 
-//		public String getInstructorNameAndCapacity() {
-//	
-//		Statement stmt = null;
-//						String query = "SELECT gi.fname,gi.sname,gc.numplaces FROM gym.instructor as gi INNER JOIN gym.course as gc ON gi.instructorid=gc.instructorid "
-//								+ "RIGHT JOIN gym.coursebookings as gcb ON gc.courseid = gcb.courseid" ;
-//							try {
-//									stmt = connection.createStatement();
-//									ResultSet rs = stmt.executeQuery(query);
-//									while (rs.next()) {
-//				
-//										String instructorFName = rs.getString("fname");
-//										String instructorSName = rs.getString("sname");
-//										int capacity = rs.getInt("numplaces");
-//
-//										return instructorFName + " " + instructorSName + " " + capacity;
-//									}
-//			
-//							}
-//
-//							catch(SQLException e) {
-//								e.printStackTrace();
-//								System.err.println("error executing query "+ query);
-//							}
-//							return "";
-//		
-//		}
-//
-//	
 
-//		public int databaseInsert() {
-//			
-//			Statement stmt = null;
-//			String update = "INSERT INTO gym.member VALUES ('Ruby','Monro','31 Brown Street','G12 5DG',072937392, '879','Student')";
-//			try {
-//				stmt = connection.createStatement();
-//				int rs = stmt.executeUpdate(update);
-//				return rs;
-//				
-//			}
-//
-//			catch(SQLException e) {
-//				e.printStackTrace();
-//				System.err.println("error executing update "+ update);
-//		}
-//			return 0;
-//		
+
+
+	public String viewMemberInfo()	{
+		
+		Statement stmt = null;
+		String query = "SELECT c.name,m.fname,m.sname,cb.memberid FROM gym.coursebookings as cb LEFT JOIN gym.member as m ON cb.memberid = m.memberid "
+				+ "INNER JOIN gym.course as c ON cb.courseid = c.courseid ORDER BY c.name";
+		try {
+			stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			
+			while (rs.next())	{
+				
+				String courseName = rs.getString("name");
+				String memFName = rs.getString("fname");
+				String memSName = rs.getString("sname");
+				String memberid = rs.getString("memberid");
+				memberInfo += "Course name: " + courseName + " " + "Member name: " + memFName + " " + memSName + " " + "Member ID: " + memberid + "\n";
+											
+			}
 		
 		
+		}
+				catch(SQLException e) {
+				e.printStackTrace();
+				System.err.println("error executing query "+ query);
+			
+				}
+	return memberInfo;
+	}
+
+
+		
+
+		public int databaseInsert(int bkNum, String memID, String courseiD) {
+			
+			
+			Statement stmt = null;
+			String sql = "INSERT INTO gym.coursebookings VALUES (bkNum,' "memID" ' , ' "courseiD" ')";
+			try {
+				stmt = connection.createStatement();
+				int rs = stmt.executeUpdate(sql);
+				return rs;
+				
+			}
+
+			catch(SQLException e) {
+				e.printStackTrace();
+				System.err.println("error executing update "+ sql);
+		}
+			return 0;
+		}
 }
-
 		
+
 
 
 

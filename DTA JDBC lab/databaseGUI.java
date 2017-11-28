@@ -1,38 +1,48 @@
+
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class databaseGUI extends JFrame implements ActionListener
 {
 	//instance variables are all the components 
-			private JPanel top, topTop, bottom;
-            private JLabel memberNameLabel,memberInfoLabel, memberIDLabel, courseLabel;
-            private JComboBox<String> courseChooser, courseChooser2, dayChooser, timeChooser;
-            private JTextField enterMemberName, enterMemberID;
+			private JPanel top, bottom;
+            private JLabel memberFNameLabel, memberSNameLabel, memberInfoLabel, memberIDLabel, courseLabel, courseIDLabel;
+            private JTextField enterCourse, enterMemberFName, enterMemberSName,enterMemberID, enterCourseID;
             private JTextArea displayInfo;
             private JButton courseInfoButton, memberInfoButton, bookButton;
+            private myDatabase db;
+            private String courseName;
+            private String chosenCourse;
+            private String memberFName;
+            private String memberSName;
+            private String memberID;
+            private String courseID;
+            private int bookingNumber;
             
             
-           public databaseGUI() {
+            
+           public databaseGUI(myDatabase db) {
         	   
+        	this.db = db;   
         	setDefaultCloseOperation(EXIT_ON_CLOSE);
        		setTitle("Gym Bookings");
-       		setSize(1100,175);
+       		setSize(1200,175);
        		setLocation(0,0);
+       		
+			courseName = db.getCourseNames();
+				
+			layoutComponents();
+}
+          
 
-       		//set layout
-       		layoutComponents();        	   
-           }
-       
            
            private void layoutComponents() {
         	   
         	   top = new JPanel();
         	   top.setBackground(Color.gray);
-        	   
-//        	   topTop = new JPanel();
-//        	   BorderLayout bl = new BorderLayout();
-//        	   topTop.setLayout(bl);
         	   
         	   courseInfoButton = new JButton("View info on all courses");
         	   courseInfoButton.addActionListener(this);
@@ -43,15 +53,12 @@ public class databaseGUI extends JFrame implements ActionListener
         	   JScrollPane scrollPane = new JScrollPane(displayInfo);
         	   top.add(scrollPane);
        	           	   
-        	   memberInfoLabel = new JLabel("View member info for:");
-        	   top.add(memberInfoLabel);
+//        	   memberInfoLabel = new JLabel("View member info for:");
+//        	   top.add(memberInfoLabel);
+//        	   
         	   
-        	   courseChooser = new JComboBox<String>();
-        	   courseChooser.addItem("Yoga");
-        	   courseChooser.addItem("Pilates");
-        	   courseChooser.addItem("Swimming");
-        	   courseChooser.addItem("Spinning");
-        	   top.add(courseChooser);
+//        	   enterCourse = new JTextField(15);
+//        	   top.add(enterCourse);
         	   
         	   memberInfoButton = new JButton("View Member Info");
         	   memberInfoButton.addActionListener(this);
@@ -61,11 +68,17 @@ public class databaseGUI extends JFrame implements ActionListener
         	   FlowLayout fl = new FlowLayout();
         	   bottom.setLayout(fl);
         	   
-        	   memberNameLabel = new JLabel("Member name:");
-        	   bottom.add(memberNameLabel);
-        	   
-        	   enterMemberName = new JTextField(15);
-        	   bottom.add(enterMemberName);
+//        	   memberFNameLabel = new JLabel("Member forename:");
+//        	   bottom.add(memberFNameLabel);
+//        	   
+//        	   enterMemberFName = new JTextField(15);
+//        	   bottom.add(enterMemberFName);
+//        	   
+//        	   memberSNameLabel = new JLabel("Member surname:");
+//        	   bottom.add(memberSNameLabel);
+//        	   
+//        	   enterMemberSName = new JTextField(15);
+//        	   bottom.add(enterMemberSName);
         	   
         	   memberIDLabel = new JLabel("Member ID:");
         	   bottom.add(memberIDLabel);
@@ -73,36 +86,12 @@ public class databaseGUI extends JFrame implements ActionListener
         	   enterMemberID = new JTextField(5);
         	   bottom.add(enterMemberID);
         	   
-        	   courseLabel = new JLabel("Course:");
-        	   bottom.add(courseLabel);
+        	   courseIDLabel = new JLabel("Course ID:");
+        	   bottom.add(courseIDLabel);
         	   
-        	   courseChooser2 = new JComboBox<String>();
-        	   courseChooser2.addItem("Yoga");
-        	   courseChooser2.addItem("Pilates");
-        	   courseChooser2.addItem("Swimming");
-        	   courseChooser2.addItem("Spinning");
-        	   bottom.add(courseChooser2);
-        	   
-        	   dayChooser = new JComboBox<String>();
-        	   dayChooser.addItem("Monday");
-        	   dayChooser.addItem("Tuesday");
-        	   dayChooser.addItem("Wednesday");
-        	   dayChooser.addItem("Thursday");
-        	   dayChooser.addItem("Friday");
-        	   bottom.add(dayChooser);
-        	   
-        	   timeChooser = new JComboBox<String>();
-        	   timeChooser.addItem("8AM");
-        	   timeChooser.addItem("9AM");
-        	   timeChooser.addItem("10AM");
-        	   timeChooser.addItem("11AM");
-        	   timeChooser.addItem("12PM");
-        	   timeChooser.addItem("1PM");
-        	   timeChooser.addItem("2PM");
-        	   timeChooser.addItem("3PM");
-        	   timeChooser.addItem("4PM");
-        	   bottom.add(timeChooser);
-        	   
+        	   enterCourseID = new JTextField(10);
+        	   bottom.add(enterCourseID);	 
+        
         	   
         	   bookButton = new JButton("Book");
         	   bottom.add(bookButton);
@@ -111,16 +100,50 @@ public class databaseGUI extends JFrame implements ActionListener
         	   add(bottom, BorderLayout.SOUTH);
         	   
            }
-           
-           public void actionPerformed(ActionEvent e) {
-//        	   
-//        	   
-//        	   
-//        	   if (e.getSource() == courseInfoButton);{      		   
-//        		   displayInfo.append(dB.getAllCourses().toString());
-//        		   
-//        	   }
+             
 
            
+           
+           public void actionPerformed(ActionEvent e) {
+        	   
+        	           	   
+        	   if (e.getSource() == courseInfoButton)	{  
+        		   String result = db.getAllCourses();
+        		   displayInfo.setText("");
+        		   displayInfo.append(result);
+        	   }
+        		   
+        		   
+        		    if (e.getSource() == memberInfoButton)	{
+        			   displayInfo.setText(" ");
+        			   displayInfo.append(db.viewMemberInfo());
+        		   	}
+        		    
+        		    if (e.getSource() == bookButton)	{
+        		    	memberID = enterMemberID.getText();
+        		    	courseID = enterCourseID.getText();
+        		    	bookingNumber = generateBookingNumber(602, 1000);
+        		    	System.out.print(bookingNumber);
+        		    	
+        		    }
+        		    
+        		    
+        		    
+        	   }
+           
+        		   
+                	   
+        		private int generateBookingNumber(int min, int max) {
+        			
+        			min = (int) Math.ceil(min);
+        			max = (int )Math.floor(max);
+        			return (int) (Math.floor(Math.random() * (max - min)) + min);
+        			
+        		}
 }
-}
+        		   
+        		   
+        		   
+
+
+          
