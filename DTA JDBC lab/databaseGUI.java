@@ -9,27 +9,22 @@ public class databaseGUI extends JFrame implements ActionListener
 {
 	//instance variables are all the components 
 			private JPanel top, bottom;
-            private JLabel memberFNameLabel, memberSNameLabel, memberInfoLabel, memberIDLabel, courseLabel, courseIDLabel;
-            private JTextField enterCourse, enterMemberFName, enterMemberSName,enterMemberID, enterCourseID;
+            private JLabel memberIDLabel, courseIDLabel;
+            private JTextField enterMemberID, enterCourseID;
             private JTextArea displayInfo;
             private JButton courseInfoButton, memberInfoButton, bookButton;
             private myDatabase db;
             private String courseName;
-            private String chosenCourse;
-            private String memberFName;
-            private String memberSName;
-            private String memberID;
-            private String courseID;
-            private int bookingNumber;
-            
-            
+ 
+          
+    
             
            public databaseGUI(myDatabase db) {
         	   
         	this.db = db;   
         	setDefaultCloseOperation(EXIT_ON_CLOSE);
        		setTitle("Gym Bookings");
-       		setSize(1200,175);
+       		setSize(1200,250);
        		setLocation(0,0);
        		
 			courseName = db.getCourseNames();
@@ -48,18 +43,11 @@ public class databaseGUI extends JFrame implements ActionListener
         	   courseInfoButton.addActionListener(this);
         	   top.add(courseInfoButton);
         	   
-        	   displayInfo = new JTextArea(5,50);
+        	   displayInfo = new JTextArea(10,50);
         	   displayInfo.setEditable(false);
         	   JScrollPane scrollPane = new JScrollPane(displayInfo);
         	   top.add(scrollPane);
        	           	   
-//        	   memberInfoLabel = new JLabel("View member info for:");
-//        	   top.add(memberInfoLabel);
-//        	   
-        	   
-//        	   enterCourse = new JTextField(15);
-//        	   top.add(enterCourse);
-        	   
         	   memberInfoButton = new JButton("View Member Info");
         	   memberInfoButton.addActionListener(this);
         	   top.add(memberInfoButton);
@@ -67,18 +55,6 @@ public class databaseGUI extends JFrame implements ActionListener
         	   bottom = new JPanel();
         	   FlowLayout fl = new FlowLayout();
         	   bottom.setLayout(fl);
-        	   
-//        	   memberFNameLabel = new JLabel("Member forename:");
-//        	   bottom.add(memberFNameLabel);
-//        	   
-//        	   enterMemberFName = new JTextField(15);
-//        	   bottom.add(enterMemberFName);
-//        	   
-//        	   memberSNameLabel = new JLabel("Member surname:");
-//        	   bottom.add(memberSNameLabel);
-//        	   
-//        	   enterMemberSName = new JTextField(15);
-//        	   bottom.add(enterMemberSName);
         	   
         	   memberIDLabel = new JLabel("Member ID:");
         	   bottom.add(memberIDLabel);
@@ -94,6 +70,7 @@ public class databaseGUI extends JFrame implements ActionListener
         
         	   
         	   bookButton = new JButton("Book");
+        	   bookButton.addActionListener(this);
         	   bottom.add(bookButton);
         	   
         	   add(top,BorderLayout.NORTH);
@@ -114,24 +91,32 @@ public class databaseGUI extends JFrame implements ActionListener
         	   }
         		   
         		   
-        		    if (e.getSource() == memberInfoButton)	{
+        	   else if (e.getSource() == memberInfoButton)	{
         			   displayInfo.setText(" ");
         			   displayInfo.append(db.viewMemberInfo());
         		   	}
         		    
-        		    if (e.getSource() == bookButton)	{
-        		    	memberID = enterMemberID.getText();
-        		    	courseID = enterCourseID.getText();
-        		    	bookingNumber = generateBookingNumber(602, 1000);
-        		    	System.out.print(bookingNumber);
+        	   else if (e.getSource() == bookButton)	{
+        		   		displayInfo.setText(" ");
+        		    	String memberID = enterMemberID.getText();
+        		    	String courseID = enterCourseID.getText();
+        		    	int bookingsCount = db.bookingCount(courseID);
+        		    	int theCapacity = db.getMaxCapacity(courseID);
         		    	
-        		    }
-        		    
-        		    
+        		    	if (bookingsCount >= theCapacity) {
+        		    		
+        		    		displayInfo.setText("Sorry, this class is fully booked.");
+        		    	}
+        		    	
+        		    	else {
+        		    	
+        		    	int bookingNumber = generateBookingNumber(602, 1000);
+        		    	String bookingResult = db.databaseInsert(bookingNumber, memberID, courseID);
+        		    	displayInfo.setText(bookingResult);
+        		    	}
+        		    }   
         		    
         	   }
-           
-        		   
                 	   
         		private int generateBookingNumber(int min, int max) {
         			

@@ -4,32 +4,15 @@ import java.sql.*;
 public class myDatabase {
 
 	private Connection connection = null;
-	private String allCourseInfo;
 	private ResultSet rs;
 	private String courseName;
-	private String courseChosen;
-	private String memberInfo;
-	private String memID;
-	private String courseiD;
-	private int bookingNumb;
+
 	
 	
 	public myDatabase() {
 		createConnection();
 		
 	}
-	
-//	public void setCourseID(String cID)	{
-//		this.courseiD = cID;
-//	}
-//	
-//	public void setmemID(String mID)	{
-//		this.memID = mID;
-//	}
-//	
-//	public void setBookingNumb(int bkNum)	{
-//		this.bookingNumb = bkNum;
-//	}
 	
 	
 	public void createConnection()	{
@@ -85,7 +68,7 @@ public class myDatabase {
 		
 
 		Statement stmt = null;
-						String query = "SELECT DISTINCT name FROM gym.course";
+						String query = "SELECT name FROM gym.course";
 						try {
 							stmt = connection.createStatement();
 							rs = stmt.executeQuery(query);
@@ -102,11 +85,51 @@ public class myDatabase {
 					return courseName;
 	}
 
+	
+	public int bookingCount(String cID)	{
 		
+			Statement stmt = null;
+			String query = "SELECT COUNT(bookingnumber) FROM gym.coursebookings WHERE courseid= '"+cID+"' ";
+			int numBookings = 0;
+			try {
+			stmt = connection.createStatement();
+			rs = stmt.executeQuery(query);
+			while (rs.next())	{
+				
+				numBookings = rs.getInt("count");
+				
+			}
+				}
+				catch(SQLException e) {
+				e.printStackTrace();
+				System.err.println("error executing query "+ query);
+			}
+			return numBookings;
+
+	}
 	
 	
-	
-	
+	public int getMaxCapacity(String cID) {
+		
+		Statement stmt = null;
+		String query = "SELECT numplaces FROM gym.course WHERE courseid= '"+cID+"' ";
+		int maxCapacity = 0;
+		try {
+		stmt = connection.createStatement();
+		rs = stmt.executeQuery(query);
+		while (rs.next())	{
+			
+			maxCapacity = rs.getInt("numplaces");
+			
+		}
+			}
+			catch(SQLException e) {
+			e.printStackTrace();
+			System.err.println("error executing query "+ query);
+		}
+		return maxCapacity;
+
+}
 	
 	public String getAllCourses() {
 		
@@ -144,6 +167,7 @@ public class myDatabase {
 		Statement stmt = null;
 		String query = "SELECT c.name,m.fname,m.sname,cb.memberid FROM gym.coursebookings as cb LEFT JOIN gym.member as m ON cb.memberid = m.memberid "
 				+ "INNER JOIN gym.course as c ON cb.courseid = c.courseid ORDER BY c.name";
+		String memberInfo = "";
 		try {
 			stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
@@ -169,25 +193,24 @@ public class myDatabase {
 	}
 
 
-		
-
-		public int databaseInsert(int bkNum, String memID, String courseiD) {
+		public String databaseInsert(int bookingnumber, String memberid, String courseid) {
 			
 			
 			Statement stmt = null;
-			String sql = "INSERT INTO gym.coursebookings VALUES (bkNum,' "memID" ' , ' "courseiD" ')";
+			String sql = "INSERT INTO gym.coursebookings (bookingnumber,memberid,courseid) VALUES ('"+bookingnumber+"','" +memberid+"' ,'"+courseid+"')";
+			String bookingResult = "";
 			try {
 				stmt = connection.createStatement();
-				int rs = stmt.executeUpdate(sql);
-				return rs;
+				stmt.executeUpdate(sql);
+				bookingResult = "Booking successful. Booking number: " + bookingnumber;
 				
 			}
 
 			catch(SQLException e) {
 				e.printStackTrace();
-				System.err.println("error executing update "+ sql);
+				bookingResult = "An error occurred. Unable to complete booking.";
 		}
-			return 0;
+			return bookingResult;
 		}
 }
 		
